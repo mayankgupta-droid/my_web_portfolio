@@ -1,0 +1,17 @@
+{
+  "name": "portfolio-website",
+  "version": "1.0.0",
+  "description": "A single-page portfolio website for Mayank Gupta.",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.22.1",
+    "mysql2": "^3.9.7"
+  }
+}
