@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. SELECTORS
+
     const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
     const submitBtn = document.getElementById('submit-btn');
@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('section');
     const revealElements = document.querySelectorAll('.reveal');
 
-    // 2. SCROLL REVEAL ANIMATION (Intersection Observer)
+    // Scroll animation
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -21,13 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     revealElements.forEach(el => revealObserver.observe(el));
 
-    // 3. ACTIVE LINK HIGHLIGHT ON SCROLL
+    // Active link on scroll
     window.addEventListener('scroll', () => {
         let current = "";
+
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (pageYOffset >= (sectionTop - 150)) {
+            if (window.scrollY >= (sectionTop - 150)) {
                 current = section.getAttribute('id');
             }
         });
@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Navbar Scroll Effect
         const nav = document.querySelector('.navbar');
         if (window.scrollY > 50) {
             nav.style.height = "70px";
@@ -50,13 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 4. SMOOTH SCROLLING
+    // Smooth scroll
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const targetId = link.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
+            const targetSection = document.querySelector(link.getAttribute('href'));
+
             window.scrollTo({
                 top: targetSection.offsetTop - 70,
                 behavior: 'smooth'
@@ -64,23 +62,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 5. FORM SUBMISSION (Original Logic Maintained)
+    // ✅ FINAL FORM SUBMISSION (FIXED)
     contactForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        // Get form data
         const formData = new FormData(contactForm);
         const data = Object.fromEntries(formData.entries());
 
-        // Update UI state
         submitBtn.disabled = true;
         const originalBtnContent = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span>Sending...</span><i class="fas fa-spinner fa-spin"></i>';
+        submitBtn.innerHTML = 'Sending...';
         formStatus.textContent = '';
         formStatus.className = '';
 
         try {
-            // API call to backend (remains unchanged)
             const response = await fetch('https://my-web-portfolio-1.onrender.com/api/contact', {
                 method: 'POST',
                 headers: {
@@ -89,23 +84,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(data),
             });
 
-            const result = await response.json();
+            let result = {};
+            try {
+                result = await response.json();
+            } catch (e) {
+                console.log("No JSON response");
+            }
 
             if (response.ok) {
-                formStatus.textContent = 'Message sent successfully!';
+                formStatus.textContent = 'Message sent successfully! ✅';
                 formStatus.className = 'success-message';
                 contactForm.reset();
             } else {
-                formStatus.textContent = result.error || 'Failed to send message.';
+                formStatus.textContent = result.error || 'Failed to send message ❌';
                 formStatus.className = 'error-message';
             }
+
         } catch (error) {
-            console.error('Error submitting form:', error);
-            formStatus.textContent = 'Error: Could not connect to server.';
+            console.error(error);
+            formStatus.textContent = 'Server is waking up... try again in 20–30 sec ⏳';
             formStatus.className = 'error-message';
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnContent;
         }
     });
+
 });
