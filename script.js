@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // API call to backend (remains unchanged)
-            const response = await fetch('https://my-web-portfolio-1.onrender.com', {
+            const response = await fetch('https://my-web-portfolio-1.onrender.com/api/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
